@@ -14,6 +14,9 @@ var wrap = require('../util/util').wrap;
  map.setCenter([-73.9749, 40.7736]);
  map.setCenter( new mapboxgl.LngLat(-73.9749, 40.7736) );
  ```
+ * ### Examples that use this class:
+ *
+ * - [Create a timeline animation](https://www.mapbox.com/mapbox-gl-js/example/timeline-animation/)
  *
  * @class LngLat
  * @classdesc A representation of a longitude, latitude point, in degrees.
@@ -21,7 +24,6 @@ var wrap = require('../util/util').wrap;
  * @param {number} lat latitude
  * @example
  * var ll = new mapboxgl.LngLat(-73.9749, 40.7736);
- * @see {@link https://www.mapbox.com/mapbox-gl-js/example/timeline-animation/|Create a timeline animation}
  */
 function LngLat(lng, lat) {
     if (isNaN(lng) || isNaN(lat)) {
@@ -37,12 +39,15 @@ function LngLat(lng, lat) {
 /**
  * Return a new `LngLat` object whose longitude is wrapped to the range (-180, 180).
  *
+ * ### Examples that use this method:
+ *
+ * - [Create a timeline animation](https://www.mapbox.com/mapbox-gl-js/example/timeline-animation/)
+ *
  * @returns {LngLat} wrapped LngLat object
  * @example
  * var ll = new mapboxgl.LngLat(286.0251, 40.7736);
  * var wrapped = ll.wrap();
  * wrapped.lng; // = -73.9749
- * @see {@link https://www.mapbox.com/mapbox-gl-js/example/timeline-animation/|Create a timeline animation}
  */
 LngLat.prototype.wrap = function () {
     return new LngLat(wrap(this.lng, -180, 180), this.lat);

@@ -13,6 +13,11 @@ module.exports = VideoSource;
 
 /**
  * Create a Video data source instance given an options object
+ *
+ * ### Examples that use this class:
+ *
+ * - [Add a video](https://www.mapbox.com/mapbox-gl-js/example/video-on-a-map/)
+ *
  * @class VideoSource
  * @param {Object} [options]
  * @param {Array<string>} options.urls An array of URLs to video files

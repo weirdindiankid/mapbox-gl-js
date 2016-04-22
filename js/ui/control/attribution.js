@@ -8,6 +8,11 @@ module.exports = Attribution;
 
 /**
  * Creates an attribution control
+ *
+ * ### Examples that use this class
+ *
+ * - [Change the default position for attribution](https://www.mapbox.com/mapbox-gl-js/example/attribution-position/)
+ *
  * @class Attribution
  * @param {Object} [options]
  * @param {string} [options.position='bottom-right'] A string indicating the control's position on the map. Options are `top-right`, `top-left`, `bottom-right`, `bottom-left`

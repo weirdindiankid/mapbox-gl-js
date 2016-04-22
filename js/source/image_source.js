@@ -13,6 +13,11 @@ module.exports = ImageSource;
 
 /**
  * Create an Image source instance given an options object
+ *
+ * ### Examples that use this class:
+ *
+ * - [Add an image](https://www.mapbox.com/mapbox-gl-js/example/image-on-a-map/)
+ *
  * @class ImageSource
  * @param {Object} [options]
  * @param {string} options.url A string URL of an image file

@@ -10,7 +10,13 @@ var EXTENT = require('../data/bucket').EXTENT;
 module.exports = GeoJSONSource;
 
 /**
- * Create a GeoJSON data source instance given an options object
+ * Create a GeoJSON data source instance given an options object.
+ *
+ * ### Examples that use this class:
+ *
+ * - [Add live realtime data](https://www.mapbox.com/mapbox-gl-js/example/live-geojson/)
+ * - [Move marker with the keyboard](https://www.mapbox.com/mapbox-gl-js/example/rotating-controllable-marker/)
+ *
  * @class GeoJSONSource
  * @param {Object} [options]
  * @param {Object|string} options.data A GeoJSON data object or URL to it. The latter is preferable in case of large GeoJSON files.
@@ -20,7 +26,8 @@ module.exports = GeoJSONSource;
  * @param {number} [options.cluster] If the data is a collection of point features, setting this to true clusters the points by radius into groups.
  * @param {number} [options.clusterRadius=50] Radius of each cluster when clustering points, in pixels.
  * @param {number} [options.clusterMaxZoom] Max zoom to cluster points on. Defaults to one zoom less than `maxzoom` (so that last zoom features are not clustered).
-
+ *
+ *
  * @example
  * var sourceObj = new mapboxgl.GeoJSONSource({
  *    data: {
@@ -39,9 +46,6 @@ module.exports = GeoJSONSource;
  * });
  * map.addSource('some id', sourceObj); // add
  * map.removeSource('some id');  // remove
- * @see
- * {@link https://www.mapbox.com/mapbox-gl-js/example/live-geojson/|Add live realtime data}
- * {@link https://www.mapbox.com/mapbox-gl-js/example/rotating-controllable-marker/|Move marker with the keyboard}
  */
 function GeoJSONSource(options) {
     options = options || {};
@@ -91,13 +95,15 @@ GeoJSONSource.prototype = util.inherit(Evented, /** @lends GeoJSONSource.prototy
     /**
      * Update source geojson data and rerender map
      *
+     * ### Examples that use this method:
+     *
+     * - [Add live realtime data](https://www.mapbox.com/mapbox-gl-js/example/live-geojson/)
+     * - [Move marker with the keyboard](https://www.mapbox.com/mapbox-gl-js/example/rotating-controllable-marker/)
+     * - [Animate a point](https://www.mapbox.com/mapbox-gl-js/example/animate-point-along-line/)
+     * - [Set a point after Geocoder result](https://www.mapbox.com/mapbox-gl-js/example/point-from-geocoder-result/)
+     *
      * @param {Object|string} data A GeoJSON data object or URL to it. The latter is preferable in case of large GeoJSON files.
      * @returns {GeoJSONSource} this
-     * @see
-     * {@link https://www.mapbox.com/mapbox-gl-js/example/live-geojson/|Add live realtime data}
-     * {@link https://www.mapbox.com/mapbox-gl-js/example/rotating-controllable-marker/|Move marker with the keyboard}
-     * {@link https://www.mapbox.com/mapbox-gl-js/example/animate-point-along-line/|Animate a point}
-     * {@link https://www.mapbox.com/mapbox-gl-js/example/point-from-geocoder-result/|Set a point after Geocoder result}
      */
     setData: function(data) {
         this._data = data;
