@@ -119,35 +119,26 @@ function cached(data, callback) {
     });
 }
 
-sinon.stub(ajax, 'getJSON', function(url, callback) {
-    if (cache[url]) return cached(cache[url], callback);
-    return request(url, function(error, response, body) {
-        if (!error && response.statusCode >= 200 && response.statusCode < 300) {
-            var data;
-            try {
-                data = JSON.parse(body);
-            } catch (err) {
-                return callback(err);
-            }
-            cache[url] = data;
-            callback(null, data);
-        } else {
-            callback(error || new Error(response.statusCode));
-        }
-    });
-});
-
-sinon.stub(ajax, 'getArrayBuffer', function(url, callback) {
+sinon.stub(ajax, 'get', function(url, responseType, callback) {
     if (cache[url]) return cached(cache[url], callback);
     return request({url: url, encoding: null}, function(error, response, body) {
         if (!error && response.statusCode >= 200 && response.statusCode < 300) {
-            var ab = new ArrayBuffer(body.length);
-            var view = new Uint8Array(ab);
-            for (var i = 0; i < body.length; ++i) {
-                view[i] = body[i];
+            var result;
+
+            switch (responseType) {
+            case 'json':
+                result = JSON.parse(body);
+                break;
+            case 'arraybuffer':
+                result = body.buffer;
+                break;
+            case 'blob':
+                result = new window.Blob([body], { type: 'image/png' });
+                break;
             }
-            cache[url] = ab;
-            callback(null, ab);
+
+            cache[url] = result;
+            callback(null, result);
         } else {
             callback(error || new Error(response.statusCode));
         }

@@ -2,34 +2,10 @@
 
 var window = require('./window');
 
-exports.getJSON = function(url, callback) {
+exports.get = function(url, responseType, callback) {
     var xhr = new window.XMLHttpRequest();
     xhr.open('GET', url, true);
-    xhr.setRequestHeader('Accept', 'application/json');
-    xhr.onerror = function(e) {
-        callback(e);
-    };
-    xhr.onload = function() {
-        if (xhr.status >= 200 && xhr.status < 300 && xhr.response) {
-            var data;
-            try {
-                data = JSON.parse(xhr.response);
-            } catch (err) {
-                return callback(err);
-            }
-            callback(null, data);
-        } else {
-            callback(new Error(xhr.statusText));
-        }
-    };
-    xhr.send();
-    return xhr;
-};
-
-exports.getArrayBuffer = function(url, callback) {
-    var xhr = new window.XMLHttpRequest();
-    xhr.open('GET', url, true);
-    xhr.responseType = 'arraybuffer';
+    xhr.responseType = responseType;
     xhr.onerror = function(e) {
         callback(e);
     };
@@ -44,6 +20,18 @@ exports.getArrayBuffer = function(url, callback) {
     return xhr;
 };
 
+exports.getJSON = function(url, callback) {
+    return exports.get(url, 'json', callback);
+};
+
+exports.getArrayBuffer = function(url, callback) {
+    return exports.get(url, 'arraybuffer', callback);
+};
+
+exports.getBlob = function(url, callback) {
+    return exports.get(url, 'blob', callback);
+};
+
 function sameOrigin(url) {
     var a = window.document.createElement('a');
     a.href = url;
@@ -51,14 +39,13 @@ function sameOrigin(url) {
 }
 
 exports.getImage = function(url, callback) {
-    return exports.getArrayBuffer(url, function(err, imgData) {
+    return exports.getBlob(url, function(err, blob) {
         if (err) return callback(err);
         var img = new window.Image();
         img.onload = function() {
             callback(null, img);
             (window.URL || window.webkitURL).revokeObjectURL(img.src);
         };
-        var blob = new window.Blob([new Uint8Array(imgData)], { type: 'image/png' });
         img.src = (window.URL || window.webkitURL).createObjectURL(blob);
         img.getData = function() {
             var canvas = window.document.createElement('canvas');
