@@ -42,15 +42,17 @@ function shapeText(text, glyphs, maxWidth, lineHeight, horizontalAlign, vertical
         if (!glyph) continue;
 
         positionedGlyphs.push(new PositionedGlyph(codePoint, x, y, glyph));
-        x += glyph.advance + spacing;
+        // commenting out horizontal orientation for now
+        //x += glyph.advance + spacing;
+        y += lineHeight * 0.9 + spacing;
     }
 
     if (!positionedGlyphs.length) return false;
-    if (positionedGlyphs.length > 13) {
+    //if (positionedGlyphs.length > 13) {
         linewrapLong(shaping, glyphs, lineHeight, maxWidth, horizontalAlign, verticalAlign, justify, translate);
-    } else {
-        linewrap(shaping, glyphs, lineHeight, maxWidth, horizontalAlign, verticalAlign, justify, translate);
-    }
+    //} else {
+    //    linewrap(shaping, glyphs, lineHeight, maxWidth, horizontalAlign, verticalAlign, justify, translate);
+    //}
     return shaping;
 }
 
