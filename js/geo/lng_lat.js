@@ -18,6 +18,9 @@ var wrap = require('../util/util').wrap;
  * @param {number} lat Latitude, measured in degrees.
  * @example
  * var ll = new mapboxgl.LngLat(-73.9749, 40.7736);
+ * @see {@link https://www.mapbox.com/mapbox-gl-js/example/mouse-position/|Get coordinates of the mouse pointer}
+  * @see {@link https://www.mapbox.com/mapbox-gl-js/example/popup/|Display a popup}
+  * @see {@link https://www.mapbox.com/mapbox-gl-js/example/using-box-queryrenderedfeatures/|Highlight features within a bounding box}
  */
 function LngLat(lng, lat) {
     if (isNaN(lng) || isNaN(lat)) {
