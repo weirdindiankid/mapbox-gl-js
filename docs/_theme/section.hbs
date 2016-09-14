@@ -146,7 +146,7 @@
   <% if (section.sees) { %>
     <div class='pad1y quiet space-top2 prose-big'>See</div>
     <ul>
-      <% section.sees.forEach(function(see) { %><li><a href="https://www.mapbox.com/mapbox-gl-js/example/<%= md(see, true) %>"><%= md(see) %></li><% }) %>
+      <% section.sees.forEach(function(see) { %><li><%= md(see) %></li><% }) %>
     </ul>
   <% } %>
 </section>
