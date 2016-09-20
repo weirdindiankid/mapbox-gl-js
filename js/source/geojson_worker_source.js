@@ -81,7 +81,7 @@ GeoJSONWorkerSource.prototype = util.inherit(VectorTileWorkerSource, /** @lends 
             this._indexData(data, params, function (err, indexed) {
                 if (err) { return callback(err); }
                 this._geoJSONIndexes[params.source] = indexed;
-                callback(null);
+                callback(null, data.metadata);
             }.bind(this));
         }.bind(this);
 
