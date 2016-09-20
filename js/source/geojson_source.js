@@ -83,12 +83,12 @@ function GeoJSONSource(id, options, dispatcher) {
         }
     }, options.workerOptions);
 
-    this._updateWorkerData(function done(err) {
+    this._updateWorkerData(function done(err, metadata) {
         if (err) {
             this.fire('error', {error: err});
             return;
         }
-        this.fire('data', {dataType: 'source'});
+        this.fire('data', {dataType: 'source', metadata: metadata});
         this.fire('source.load');
     }.bind(this));
 }
@@ -116,11 +116,11 @@ GeoJSONSource.prototype = util.inherit(Evented, /** @lends GeoJSONSource.prototy
     setData: function(data) {
         this._data = data;
 
-        this._updateWorkerData(function (err) {
+        this._updateWorkerData(function (err, metadata) {
             if (err) {
                 return this.fire('error', { error: err });
             }
-            this.fire('data', {dataType: 'source'});
+            this.fire('data', {dataType: 'source', metadata: metadata});
         }.bind(this));
 
         return this;
@@ -143,9 +143,9 @@ GeoJSONSource.prototype = util.inherit(Evented, /** @lends GeoJSONSource.prototy
         // target {this.type}.loadData rather than literally geojson.loadData,
         // so that other geojson-like source types can easily reuse this
         // implementation
-        this.workerID = this.dispatcher.send(this.type + '.loadData', options, function(err) {
+        this.workerID = this.dispatcher.send(this.type + '.loadData', options, function(err, metadata) {
             this._loaded = true;
-            callback(err);
+            callback(err, metadata);
 
         }.bind(this));
     },
