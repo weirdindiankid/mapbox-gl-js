@@ -80,7 +80,7 @@ class GeoJSONWorkerSource extends VectorTileWorkerSource {
             this._indexData(data, params, (err, indexed) => {
                 if (err) { return callback(err); }
                 this._geoJSONIndexes[params.source] = indexed;
-                callback(null);
+                callback(null, data.metadata);
             });
         }.bind(this);
 

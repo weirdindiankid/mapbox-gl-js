@@ -101,12 +101,12 @@ class GeoJSONSource extends Evented {
 
         this.setEventedParent(eventedParent);
         this.fire('dataloading', {dataType: 'source'});
-        this._updateWorkerData((err) => {
+        this._updateWorkerData((err, metadata) => {
             if (err) {
                 this.fire('error', {error: err});
                 return;
             }
-            this.fire('data', {dataType: 'source'});
+            this.fire('data', {dataType: 'source', metadata});
             this.fire('source.load');
         });
     }
@@ -125,11 +125,11 @@ class GeoJSONSource extends Evented {
         this._data = data;
 
         this.fire('dataloading', {dataType: 'source'});
-        this._updateWorkerData((err) => {
+        this._updateWorkerData((err, metadata) => {
             if (err) {
                 return this.fire('error', { error: err });
             }
-            this.fire('data', {dataType: 'source'});
+            this.fire('data', {dataType: 'source', metadata});
         });
 
         return this;
@@ -152,9 +152,9 @@ class GeoJSONSource extends Evented {
         // target {this.type}.loadData rather than literally geojson.loadData,
         // so that other geojson-like source types can easily reuse this
         // implementation
-        this.workerID = this.dispatcher.send(`${this.type}.loadData`, options, (err) => {
+        this.workerID = this.dispatcher.send(`${this.type}.loadData`, options, (err, metadata) => {
             this._loaded = true;
-            callback(err);
+            callback(err, metadata);
 
         });
     }
