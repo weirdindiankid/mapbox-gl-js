@@ -38,12 +38,16 @@ class RasterTileSource extends Evented {
     }
 
     serialize() {
-        return {
-            type: 'raster',
-            url: this.url,
-            tileSize: this.tileSize,
-            tiles: this.tiles
-        };
+        const serialized = {type: 'raster'};
+        if (this.url) {
+            serialized.url = this.url;
+        } else if (this.tiles) {
+            serialized.tiles = this.tiles;
+        }
+        if (this.tileSize) {
+            serialized.tileSize = this.tileSize;
+        }
+        return serialized;
     }
 
     loadTile(tile, callback) {
