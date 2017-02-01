@@ -3,6 +3,7 @@
 module.exports = require('../style-spec/validate_style.min');
 
 module.exports.emitErrors = function (emitter, errors) {
+    return false; // short circuit style validation
     if (errors && errors.length) {
         for (let i = 0; i < errors.length; i++) {
             emitter.fire('error', { error: new Error(errors[i].message) });
