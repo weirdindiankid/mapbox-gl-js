@@ -1,8 +1,13 @@
 'use strict';
 
 const util = require('../util/util');
-
+const fs = require('fs');
+const colorbarBase64 = fs.readFileSync(__dirname + '/draw_raster_terrain_light_color_bar.png', 'base64');
 module.exports = drawRaster;
+
+const colorbarImg = new Image();
+colorbarImg.src = 'data:image/png;base64,' + colorbarBase64;
+let colorbarTexture;
 
 function drawRaster(painter, sourceCache, layer, coords) {
     if (painter.isOpaquePass) return;
@@ -28,17 +33,6 @@ function drawRaster(painter, sourceCache, layer, coords) {
 }
 
 function drawRasterTile(painter, sourceCache, layer, coord) {
-    // This is a temporary shortcut since it's a pain to add new params and the
-    // shader depends on these being defined.
-    layer.paint = {
-        "raster-brightness-max": 1,
-        "raster-brightness-min": 0,
-        "raster-contrast": 0,
-        "raster-fade-duration": 300,
-        "raster-hue-rotate": 0,
-        "raster-opacity": 1,
-        "raster-saturation": 0,
-    };
 
     const gl = painter.gl;
 
@@ -49,15 +43,8 @@ function drawRasterTile(painter, sourceCache, layer, coord) {
 
     tile.registerFadeDuration(painter.style.animationLoop, layer.paint['raster-fade-duration']);
 
-    const program = painter.useProgram('raster');
+    const program = painter.useProgram('rasterTerrain');
     gl.uniformMatrix4fv(program.u_matrix, false, posMatrix);
-
-    // color parameters
-    gl.uniform1f(program.u_brightness_low, layer.paint['raster-brightness-min']);
-    gl.uniform1f(program.u_brightness_high, layer.paint['raster-brightness-max']);
-    gl.uniform1f(program.u_saturation_factor, saturationFactor(layer.paint['raster-saturation']));
-    gl.uniform1f(program.u_contrast_factor, contrastFactor(layer.paint['raster-contrast']));
-    gl.uniform3fv(program.u_spin_weights, spinWeights(layer.paint['raster-hue-rotate']));
 
     const parentTile = tile.sourceCache && tile.sourceCache.findLoadedParent(coord, 0, {}),
         fade = getFadeValues(tile, parentTile, layer, painter.transform);
@@ -78,12 +65,26 @@ function drawRasterTile(painter, sourceCache, layer, coord) {
         gl.bindTexture(gl.TEXTURE_2D, tile.texture);
     }
 
+    gl.activeTexture(gl.TEXTURE2);
+    if (!colorbarTexture) {
+        colorbarTexture = gl.createTexture();
+        gl.bindTexture(gl.TEXTURE_2D, colorbarTexture);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, colorbarImg);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    } else {
+        gl.bindTexture(gl.TEXTURE_2D, colorbarTexture);
+    }
+
+    gl.uniform1i(program.u_image2, 2);
+
     // cross-fade parameters
     gl.uniform2fv(program.u_tl_parent, parentTL || [0, 0]);
     gl.uniform1f(program.u_scale_parent, parentScaleBy || 1);
     gl.uniform1f(program.u_buffer_scale, 1);
     gl.uniform1f(program.u_fade_t, fade.mix);
-    gl.uniform1f(program.u_opacity, fade.opacity * layer.paint['raster-opacity']);
     gl.uniform1i(program.u_image0, 0);
     gl.uniform1i(program.u_image1, 1);
 
